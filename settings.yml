@@ -1,0 +1,17 @@
+source_dir: src
+config_path: "%{source_dir}/bashly.yml"
+target_dir: .
+lib_dir: lib
+strict: false # set -e
+#strict: true # set -euo pipefail
+tab_indent: false
+compact_short_flags: true
+env: development # Generate with file markers
+#env: production # Generate a smaller script, without file markers
+partials_extension: sh
+usage_colors:
+  caption: bold
+  command: yellow
+  arg: green
+  flag: cyan
+  environment_variable: blue

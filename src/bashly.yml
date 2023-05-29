@@ -1,0 +1,7 @@
+name: vximg
+help: Image manipulation utilities
+version: 0.0.0-development
+
+commands:
+- import: src/upscale_command.yml
+- import: src/completions_command.yml

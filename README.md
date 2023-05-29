@@ -11,6 +11,20 @@
 
 </div>
 
+## 🚀 Setup
+
+This project was setup using these commands:
+
+```shell
+bashly init
+bashly add colors
+bashly add settings
+bashly add validations
+bashly add completions
+bashly add yaml
+bashly generate
+```
+
 ## 📖 Prerequisites
 
 In order to run the project we need the following software binaries installed on our development machines:
@@ -18,6 +32,7 @@ In order to run the project we need the following software binaries installed on
 - [x] `docker>=20.10.12`
 - [x] `bash>=4`
 - [ ] `bashly>=1.0.4`
+- [ ] `shfmt>=3.4.0`
 
 Requirements not explicitly checked above are assumed to be met by `docker` containers:
 

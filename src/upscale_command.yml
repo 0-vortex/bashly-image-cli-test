@@ -1,0 +1,34 @@
+name: upscale
+alias: u
+help: Upscale an image
+default: true
+
+args:
+  - name: directory
+    required: true
+    help: Path to folder containing images
+    validate: dir_exists
+
+flags:
+  - long: --upscaler-path
+    short: -u
+    arg: path
+    default: "./scripts/realesrgan-ncnn-vulkan-20220424-$PLATFORM"
+    help: Set the path to the upscaler binary
+
+  - long: --factor
+    short: -f
+    arg: factor
+    default: "4k"
+    help: Set the upscale factor
+    allowed: [ "4k", "8k" ]
+
+  - long: --model
+    short: -m
+    arg: model
+    default: "realesrgan-x4plus"
+    help: Set the upscale model
+
+examples:
+  - vximg upscale .
+  - vximg upscale . -f 8k -m realesrgan-x4plus-anime-6B
