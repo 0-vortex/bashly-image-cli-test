@@ -3,6 +3,12 @@ alias: u
 help: Upscale an image
 default: true
 
+dependencies:
+  docker: visit https://docs.docker.com/engine/install/
+  http_client:
+    command: [ curl, wget ]
+    help: visit https://curl.se/download.html or https://www.gnu.org/software/wget/
+
 args:
   - name: directory
     required: true
@@ -13,22 +19,48 @@ flags:
   - long: --upscaler-path
     short: -u
     arg: path
-    default: "./scripts/realesrgan-ncnn-vulkan-20220424-$PLATFORM"
+    default: ${VX_UPSCALER_PATH:-build/realesrgan-ncnn-vulkan-20220424-macos}
     help: Set the path to the upscaler binary
 
-  - long: --factor
-    short: -f
-    arg: factor
-    default: "4k"
-    help: Set the upscale factor
-    allowed: [ "4k", "8k" ]
+  - long: --upscaler-binary
+    short: -b
+    arg: binary
+    default: ${VX_UPSCALER_BINARY:-realesrgan-ncnn-vulkan}
+    help: Set the upscaler binary name
 
   - long: --model
     short: -m
     arg: model
-    default: "realesrgan-x4plus"
+    default: ${VX_UPSCALER_MODEL:-realesrgan-x4plus}
     help: Set the upscale model
+    allowed: [ "realesr-animevideov3", "realesrgan-x4plus", "realesrgan-x4plus-anime", "realesrnet-x4plus" ]
+
+  - long: --factor
+    short: -f
+    arg: factor
+    default: ${VX_UPSCALER_FACTOR:-4k}
+    help: Set the upscale factor
+    allowed: [ "4k", "8k" ]
+
+environment_variables:
+  - name: vx_upscaler_path
+    help: Path to folder containing upscaler binaries
+    default: "./build/realesrgan-ncnn-vulkan-20220424-macos"
+
+  - name: vx_upscaler_binary
+    help: Name of the upscaler binary
+    default: "realesrgan-ncnn-vulkan"
+
+  - name: vx_upscaler_model
+    help: Name of the upscaler model
+    default: "realesrgan-x4plus"
+
+  - name: vx_upscaler_factor
+    help: Upscale factor
+    default: "4k"
 
 examples:
   - vximg upscale .
   - vximg upscale . -f 8k -m realesrgan-x4plus-anime-6B
+
+

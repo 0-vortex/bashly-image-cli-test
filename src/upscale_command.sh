@@ -1,4 +1,5 @@
-echo "# this file is located in 'src/upscale_command.sh'"
-echo "# code for 'vximg upscale' goes here"
-echo "# you can edit it freely and regenerate (it will not be overwritten)"
+blue "VX_UPSCALER_PATH is \"$VX_UPSCALER_PATH\""
+blue "VX_UPSCALER_BINARY is \"$VX_UPSCALER_BINARY\""
+blue "VX_UPSCALER_MODEL is \"$VX_UPSCALER_MODEL\""
+blue "VX_UPSCALER_FACTOR is \"$VX_UPSCALER_FACTOR\""
 inspect_args

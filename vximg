@@ -81,20 +81,27 @@ vximg_upscale_usage() {
     # :flag.usage
     printf "  %s\n" "$(cyan "--upscaler-path, -u PATH")"
     printf "    Set the path to the upscaler binary\n"
-    printf "    Default: ./scripts/realesrgan-ncnn-vulkan-20220424-$PLATFORM\n"
+    printf "    Default: ${VX_UPSCALER_PATH:-build/realesrgan-ncnn-vulkan-20220424-macos}\n"
+    echo
+
+    # :flag.usage
+    printf "  %s\n" "$(cyan "--upscaler-binary, -b BINARY")"
+    printf "    Set the upscaler binary name\n"
+    printf "    Default: ${VX_UPSCALER_BINARY:-realesrgan-ncnn-vulkan}\n"
+    echo
+
+    # :flag.usage
+    printf "  %s\n" "$(cyan "--model, -m MODEL")"
+    printf "    Set the upscale model\n"
+    printf "    Allowed: realesr-animevideov3, realesrgan-x4plus, realesrgan-x4plus-anime, realesrnet-x4plus\n"
+    printf "    Default: ${VX_UPSCALER_MODEL:-realesrgan-x4plus}\n"
     echo
 
     # :flag.usage
     printf "  %s\n" "$(cyan "--factor, -f FACTOR")"
     printf "    Set the upscale factor\n"
     printf "    Allowed: 4k, 8k\n"
-    printf "    Default: 4k\n"
-    echo
-
-    # :flag.usage
-    printf "  %s\n" "$(cyan "--model, -m MODEL")"
-    printf "    Set the upscale model\n"
-    printf "    Default: realesrgan-x4plus\n"
+    printf "    Default: ${VX_UPSCALER_FACTOR:-4k}\n"
     echo
 
     # :command.usage_fixed_flags
@@ -108,6 +115,33 @@ vximg_upscale_usage() {
     # :argument.usage
     printf "  %s\n" "$(green "DIRECTORY")"
     printf "    Path to folder containing images\n"
+    echo
+
+    # :command.usage_environment_variables
+    printf "%s\n" "$(bold "Environment Variables:")"
+
+    # :environment_variable.usage
+    printf "  %s\n" "$(blue "VX_UPSCALER_PATH")"
+    printf "    Path to folder containing upscaler binaries\n"
+    printf "    Default: ./build/realesrgan-ncnn-vulkan-20220424-macos\n"
+    echo
+
+    # :environment_variable.usage
+    printf "  %s\n" "$(blue "VX_UPSCALER_BINARY")"
+    printf "    Name of the upscaler binary\n"
+    printf "    Default: realesrgan-ncnn-vulkan\n"
+    echo
+
+    # :environment_variable.usage
+    printf "  %s\n" "$(blue "VX_UPSCALER_MODEL")"
+    printf "    Name of the upscaler model\n"
+    printf "    Default: realesrgan-x4plus\n"
+    echo
+
+    # :environment_variable.usage
+    printf "  %s\n" "$(blue "VX_UPSCALER_FACTOR")"
+    printf "    Upscale factor\n"
+    printf "    Default: 4k\n"
     echo
 
     # :command.usage_examples
@@ -236,6 +270,27 @@ blue_underlined() { print_in_color "\e[4;34m" "$*"; }
 magenta_underlined() { print_in_color "\e[4;35m" "$*"; }
 cyan_underlined() { print_in_color "\e[4;36m" "$*"; }
 
+# src/lib/logo.sh
+banner_logo() {
+  cat <<EOF
+ ██▒   █▓ ▒█████   ██▀███  ▄▄▄█████▓▓█████ ▒██   ██▒
+▓██░   █▒▒██▒  ██▒▓██ ▒ ██▒▓  ██▒ ▓▒▓█   ▀ ▒▒ █ █ ▒░
+ ▓██  █▒░▒██░  ██▒▓██ ░▄█ ▒▒ ▓██░ ▒░▒███   ░░  █   ░
+  ▒██ █░░▒██   ██░▒██▀▀█▄  ░ ▓██▓ ░ ▒▓█  ▄  ░ █ █ ▒
+   ▒▀█░  ░ ████▓▒░░██▓ ▒██▒  ▒██▒ ░ ░▒████▒▒██▒ ▒██▒
+   ░ ▐░  ░ ▒░▒░▒░ ░ ▒▓ ░▒▓░  ▒ ░░   ░░ ▒░ ░▒▒ ░ ░▓ ░
+   ░ ░░    ░ ▒ ▒░   ░▒ ░ ▒░    ░     ░ ░  ░░░   ░▒ ░
+     ░░  ░ ░ ░ ▒    ░░   ░   ░         ░    ░    ░
+      ░      ░ ░     ░                 ░  ░ ░    ░
+     ░
+EOF
+}
+
+# src/lib/sample_function.sh
+sample_function() {
+  echo "it works"
+}
+
 # src/lib/send_completions.sh
 send_completions() {
   echo $'# vximg completion                                         -*- shell-script -*-'
@@ -272,8 +327,16 @@ send_completions() {
   echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "4k 8k")" -- "$cur" )'
   echo $'      ;;'
   echo $''
+  echo $'    \'upscale\'*\'--model\')'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "realesr-animevideov3 realesrgan-x4plus realesrgan-x4plus-anime realesrnet-x4plus")" -- "$cur" )'
+  echo $'      ;;'
+  echo $''
   echo $'    \'completions\'*)'
   echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "--help -h")" -- "$cur" )'
+  echo $'      ;;'
+  echo $''
+  echo $'    \'upscale\'*\'-m\')'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "realesr-animevideov3 realesrgan-x4plus realesrgan-x4plus-anime realesrnet-x4plus")" -- "$cur" )'
   echo $'      ;;'
   echo $''
   echo $'    \'u\'*\'--factor\')'
@@ -284,8 +347,16 @@ send_completions() {
   echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "4k 8k")" -- "$cur" )'
   echo $'      ;;'
   echo $''
+  echo $'    \'u\'*\'--model\')'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "realesr-animevideov3 realesrgan-x4plus realesrgan-x4plus-anime realesrnet-x4plus")" -- "$cur" )'
+  echo $'      ;;'
+  echo $''
   echo $'    \'upscale\'*)'
-  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "--factor --help --model --upscaler-path -f -h -m -u")" -- "$cur" )'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "--factor --help --model --upscaler-binary --upscaler-path -b -f -h -m -u")" -- "$cur" )'
+  echo $'      ;;'
+  echo $''
+  echo $'    \'u\'*\'-m\')'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "realesr-animevideov3 realesrgan-x4plus realesrgan-x4plus-anime realesrnet-x4plus")" -- "$cur" )'
   echo $'      ;;'
   echo $''
   echo $'    \'u\'*\'-f\')'
@@ -293,7 +364,7 @@ send_completions() {
   echo $'      ;;'
   echo $''
   echo $'    \'u\'*)'
-  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "--factor --help --model --upscaler-path -f -h -m -u")" -- "$cur" )'
+  echo $'      while read -r; do COMPREPLY+=( "$REPLY" ); done < <( compgen -W "$(_vximg_completions_filter "--factor --help --model --upscaler-binary --upscaler-path -b -f -h -m -u")" -- "$cur" )'
   echo $'      ;;'
   echo $''
   echo $'    *)'
@@ -353,9 +424,10 @@ yaml_load() {
 # :command.function
 vximg_upscale_command() {
   # src/upscale_command.sh
-  echo "# this file is located in 'src/upscale_command.sh'"
-  echo "# code for 'vximg upscale' goes here"
-  echo "# you can edit it freely and regenerate (it will not be overwritten)"
+  blue "VX_UPSCALER_PATH is \"$VX_UPSCALER_PATH\""
+  blue "VX_UPSCALER_BINARY is \"$VX_UPSCALER_BINARY\""
+  blue "VX_UPSCALER_MODEL is \"$VX_UPSCALER_MODEL\""
+  blue "VX_UPSCALER_FACTOR is \"$VX_UPSCALER_FACTOR\""
   inspect_args
 
 }
@@ -473,6 +545,30 @@ vximg_upscale_parse_requirements() {
     esac
   done
 
+  # :command.environment_variables_filter
+  # :command.environment_variables_default
+  export VX_UPSCALER_PATH="${VX_UPSCALER_PATH:-./build/realesrgan-ncnn-vulkan-20220424-macos}"
+  export VX_UPSCALER_BINARY="${VX_UPSCALER_BINARY:-realesrgan-ncnn-vulkan}"
+  export VX_UPSCALER_MODEL="${VX_UPSCALER_MODEL:-realesrgan-x4plus}"
+  export VX_UPSCALER_FACTOR="${VX_UPSCALER_FACTOR:-4k}"
+
+  # :command.dependencies_filter
+  if command -v docker >/dev/null 2>&1; then
+    deps['docker']="$(command -v docker | head -n1)"
+  else
+    printf "missing dependency: docker\n" >&2
+    printf "%s\n" "visit https://docs.docker.com/engine/install/" >&2
+    exit 1
+  fi
+
+  if command -v curl wget >/dev/null 2>&1; then
+    deps['http_client']="$(command -v curl wget | head -n1)"
+  else
+    printf "missing dependency: http_client (curl/wget)\n" >&2
+    printf "%s\n" "visit https://curl.se/download.html or https://www.gnu.org/software/wget/" >&2
+    exit 1
+  fi
+
   # :command.command_filter
   action="upscale"
 
@@ -496,16 +592,16 @@ vximg_upscale_parse_requirements() {
         ;;
 
       # :flag.case
-      --factor | -f)
+      --upscaler-binary | -b)
 
         # :flag.case_arg
         if [[ -n ${2+x} ]]; then
 
-          args['--factor']="$2"
+          args['--upscaler-binary']="$2"
           shift
           shift
         else
-          printf "%s\n" "--factor requires an argument: --factor, -f FACTOR" >&2
+          printf "%s\n" "--upscaler-binary requires an argument: --upscaler-binary, -b BINARY" >&2
           exit 1
         fi
         ;;
@@ -521,6 +617,21 @@ vximg_upscale_parse_requirements() {
           shift
         else
           printf "%s\n" "--model requires an argument: --model, -m MODEL" >&2
+          exit 1
+        fi
+        ;;
+
+      # :flag.case
+      --factor | -f)
+
+        # :flag.case_arg
+        if [[ -n ${2+x} ]]; then
+
+          args['--factor']="$2"
+          shift
+          shift
+        else
+          printf "%s\n" "--factor requires an argument: --factor, -f FACTOR" >&2
           exit 1
         fi
         ;;
@@ -559,11 +670,16 @@ vximg_upscale_parse_requirements() {
   fi
 
   # :command.default_assignments
-  [[ -n ${args['--upscaler-path']:-} ]] || args['--upscaler-path']="./scripts/realesrgan-ncnn-vulkan-20220424-$PLATFORM"
-  [[ -n ${args['--factor']:-} ]] || args['--factor']="4k"
-  [[ -n ${args['--model']:-} ]] || args['--model']="realesrgan-x4plus"
+  [[ -n ${args['--upscaler-path']:-} ]] || args['--upscaler-path']="${VX_UPSCALER_PATH:-build/realesrgan-ncnn-vulkan-20220424-macos}"
+  [[ -n ${args['--upscaler-binary']:-} ]] || args['--upscaler-binary']="${VX_UPSCALER_BINARY:-realesrgan-ncnn-vulkan}"
+  [[ -n ${args['--model']:-} ]] || args['--model']="${VX_UPSCALER_MODEL:-realesrgan-x4plus}"
+  [[ -n ${args['--factor']:-} ]] || args['--factor']="${VX_UPSCALER_FACTOR:-4k}"
 
   # :command.whitelist_filter
+  if [[ ${args['--model']} ]] && [[ ! ${args['--model']} =~ ^(realesr-animevideov3|realesrgan-x4plus|realesrgan-x4plus-anime|realesrnet-x4plus)$ ]]; then
+    printf "%s\n" "--model must be one of: realesr-animevideov3, realesrgan-x4plus, realesrgan-x4plus-anime, realesrnet-x4plus" >&2
+    exit 1
+  fi
   if [[ ${args['--factor']} ]] && [[ ! ${args['--factor']} =~ ^(4k|8k)$ ]]; then
     printf "%s\n" "--factor must be one of: 4k, 8k" >&2
     exit 1
@@ -615,11 +731,29 @@ vximg_completions_parse_requirements() {
 
 }
 
+# :command.user_hooks
+before_hook() {
+  # src/before.sh
+  green "==[ Before Hook Called ]=="
+
+}
+
+after_hook() {
+  # src/after.sh
+  green "==[ After Hook Called ]=="
+
+}
+
 # :command.initialize
 initialize() {
   version="0.0.0-development"
   long_usage=''
   set -e
+
+  # src/initialize.sh
+
+  logo="$(banner_logo)"
+  cyan_bold "\n$logo\n"
 
 }
 
@@ -631,11 +765,14 @@ run() {
   declare -a input=()
   normalize_input "$@"
   parse_requirements "${input[@]}"
+  before_hook
 
   case "$action" in
     "upscale") vximg_upscale_command ;;
     "completions") vximg_completions_command ;;
   esac
+
+  after_hook
 }
 
 initialize

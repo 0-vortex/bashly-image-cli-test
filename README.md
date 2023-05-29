@@ -22,6 +22,8 @@ bashly add settings
 bashly add validations
 bashly add completions
 bashly add yaml
+bashly add lib
+bashly add hooks
 bashly generate
 ```
 
@@ -38,6 +40,7 @@ Requirements not explicitly checked above are assumed to be met by `docker` cont
 
 ```shell
 alias bashly='docker run --rm --interactive --tty --volume "$PWD:/app" --user $(id -u):$(id -g) dannyben/bashly'
+alias shfmt='docker run --rm --volume "$PWD:/mnt" mvdan/shfmt --case-indent --indent 2 --diff /mnt'
 ```
 
 [//]: # (## 🖥️ Local development)
